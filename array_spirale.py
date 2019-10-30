@@ -59,6 +59,8 @@ def spirale_array_fill(b, n, m):
             spiral[i, curr] = b
             b += 1
         bp += 1
+    if n % 2 != 0 or m % 2 != 0:
+        spiral[(n // 2), (m // 2)] = b
     return (spiral)
 
-print(spirale_array_fill(1, 10, 10))
+print(spirale_array_fill(1, 7, 7))
