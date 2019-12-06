@@ -25,11 +25,11 @@ def check_street_json(input_city_country):
         # проаерка параметра переданного через фабрику
         pattern = '\d+'
         with open(streets_file, 'r', encoding='utf-8') as f:
-            file = json.load(f)
-            for key in file:
-                # print(key['street'])
-                if re.findall(pattern, key['street']) is None:
-                    print('Format of street is not valid: {}'.format(key['street']))
+            database = json.load(f)
+            streets = database.get("street")
+            for key in streets:
+                if re.findall(pattern, key) is None:
+                    print('Format of street is not valid: {}'.format(key))
                 else:
                     pass
         return input_city_country()
