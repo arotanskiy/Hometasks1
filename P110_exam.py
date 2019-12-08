@@ -9,7 +9,7 @@ import re
 streets_file = 'py110_exam_base.json'
 
 
-def check_street_json(input_city_country):
+def verify_street_json(get_random_address):
     """
     This func check a validity of streets spelling
     Parameters
@@ -32,38 +32,24 @@ def check_street_json(input_city_country):
                     print('Format of street is not valid: {}'.format(key))
                 else:
                     pass
-        return input_city_country()
+        return get_random_address()
     return wrapper
 
 
-@check_street_json
-def input_city_country():
-    """
-    This function request country and city
-
-    Returns City and Country
-    -------
-
-    """
-    print('Please input city:')
-    city = input()
-    print('Please input country:')
-    country = input()
-    return city, country
-
-
-def get_random_street():
+@verify_street_json
+def get_random_address():
     with open(streets_file, 'r', encoding='utf-8') as f:
         file = json.load(f)
-        street = random.choice(file)['street']
-        return street
+        country = random.choice(file.get("country"))
+        city = random.choice(file.get("city"))
+        street = random.choice(file.get("street"))
+        return country, city, street
 
 
 def generate_address():
-    house = random.randint(1, 10)
-    flat = random.randint(10, 20)
-    city, country = input_city_country()
-    street = get_random_street()
+    house = random.randint(1, 30)
+    flat = random.randint(1, 20)
+    country, city, street = get_random_address()
     print("Random address is:\ncountry: {}\ncity: {}\nstreet :{}\nhouse: {}\nflat {}".
           format(country, city, street, house, flat))
 
