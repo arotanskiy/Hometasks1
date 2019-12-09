@@ -63,9 +63,9 @@ def get_random_address():
         return country, city, street
 
 
-# @test_mode("Test")
-# @test_mode("sdfsd")
-@test_mode()
+# @test_mode("Test")  # This is a test mode
+# @test_mode("sdfsd")  # This mode is wrong
+@test_mode()  # This is a default mode to generate address
 def generate_address():
     """
     This function generates a random house and flat and get country, city, street
