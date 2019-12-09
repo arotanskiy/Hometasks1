@@ -1,43 +1,60 @@
 """
-Description of this module
+This module generates an address for delivery service with random street, build and flat numbers
 """
 import random
 import json
 import re
 
 
-streets_file = 'py110_exam_base.json'
+streets_file = 'py110_exam_base.json'  # source file with country, city and streets
 
 
-def verify_street_json(get_random_address):
+def test_mode(*args):
     """
-    This func check a validity of streets spelling
-    Parameters
-    ----------
-    input_city_country
-
-    Returns wrapped function
-    -------
-
+    This function to use test mode
+    :param args:
+    :return:
     """
-    def wrapper():
-        # полный генератор
-        # проаерка параметра переданного через фабрику
-        pattern = '\d+'
-        with open(streets_file, 'r', encoding='utf-8') as f:
-            database = json.load(f)
-            streets = database.get("street")
-            for key in streets:
-                if re.findall(pattern, key) is None:
-                    print('Format of street is not valid: {}'.format(key))
+
+    def verify_street_format(generate_address):
+        """
+        This is a wrapper for a function
+        :param generate_address:
+        :return: result of wrapper
+        """
+        def wrapper():
+            """
+            This function check a validity of street spelling
+            :return: generated address or an assert if street spelling is wrong
+            """
+            if len(args) == 0:
+                pattern1 = '.+\n'  # check "enter" at the end of line
+                pattern2 = '.+,.+'  # check there is no "," symbol
+                result = generate_address().send(None)
+                if re.fullmatch(pattern1 and pattern2, result[2]) and type(result[2]) is str:
+                    print('Street format is not valid!')
+                    raise AssertionError('"{}" street format is not valid!'.format(result[2]))
                 else:
-                    pass
-        return get_random_address()
-    return wrapper
+                    return result
+            else:
+                mode = str(args[0])
+                if re.fullmatch('test', mode.lower()):
+                    print('This is a test mode')
+                    print('To generate address no need to specify mode')
+                    exit(0)
+                elif mode:
+                    print('The argument shall be "Test" or empty')
+                    exit(1)
+        return wrapper
+
+    return verify_street_format
 
 
-@verify_street_json
 def get_random_address():
+    """
+    This function read a json file and extract country, city, and street
+    :return: country, city, and street
+    """
     with open(streets_file, 'r', encoding='utf-8') as f:
         file = json.load(f)
         country = random.choice(file.get("country"))
@@ -46,12 +63,21 @@ def get_random_address():
         return country, city, street
 
 
+# @test_mode("Test")
+# @test_mode("sdfsd")
+@test_mode()
 def generate_address():
-    house = random.randint(1, 30)
-    flat = random.randint(1, 20)
-    country, city, street = get_random_address()
-    print("Random address is:\ncountry: {}\ncity: {}\nstreet :{}\nhouse: {}\nflat {}".
-          format(country, city, street, house, flat))
+    """
+    This function generates a random house and flat and get country, city, street
+    :return: country, city, street, house, flat
+    """
+    while True:
+        house = random.randint(1, 50)
+        flat = random.randint(1, 230)
+        country, city, street = get_random_address()
+        yield country, city, street, house, flat
 
 
-generate_address()
+if __name__ == "__main__":
+    for i in range(4):
+        print(generate_address())
