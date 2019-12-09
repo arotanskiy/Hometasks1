@@ -37,14 +37,14 @@ def test_mode(*args):
                 else:
                     return result
             else:
-                mode = str(args[0])
-                if re.fullmatch('test', mode.lower()):
-                    print('This is a test mode')
-                    print('To generate address no need to specify mode')
-                    exit(0)
-                elif mode:
-                    print('The argument shall be "Test" or empty')
-                    exit(1)
+                result = generate_address().send(None)
+                param = str(args[0])
+                if re.findall(param, result[0]) or re.findall(param, result[1]) or re.findall(param, result[2]):
+                    result = 'Generated address "{}" matches a template "{}"'.format(result, param)
+                    return result
+                else:
+                    return result
+
         return wrapper
 
     return verify_street_format
@@ -63,9 +63,8 @@ def get_random_address():
         return country, city, street
 
 
-# @test_mode("Test")
-# @test_mode("sdfsd")
-@test_mode()
+@test_mode("переулок")  # This is a test mode
+# @test_mode()  # This is a default mode to generate address
 def generate_address():
     """
     This function generates a random house and flat and get country, city, street
